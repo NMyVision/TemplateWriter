@@ -66,6 +66,17 @@ namespace NMyVision
             _d.Add(GlobalVariables.Current_Time.ToString(), now.ToString("HHmmss"));
             _d.Add(GlobalVariables.Current_UniqueDate.ToString(), now.ToString("yyyyMMddHHmmssfff"));
         }
+        
+        /// <summary>
+        /// Parses template from an object.
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        public static object Transform(string template, object o)
+        {
+            return o.ToStringFromTemplate(template);
+        }
 
         /// <summary>
         /// Add values to the template writer.

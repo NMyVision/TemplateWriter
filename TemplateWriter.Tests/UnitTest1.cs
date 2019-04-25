@@ -42,6 +42,13 @@ namespace TemplateWriterTests
         }
 
         [TestMethod]
+        public void Current_UniqueDate()
+        {
+            var tw = CreateTemplateWriter();
+            Assert.AreEqual("19800406063033000", tw.Transform($"{{{TemplateWriter.GlobalVariables.Current_UniqueDate}}}"));
+        }
+
+        [TestMethod]
         public void Variables()
         {
             var tw = CreateTemplateWriter();
@@ -66,7 +73,7 @@ namespace TemplateWriterTests
              
             var tmp = "{GroupKey}_{CompanyKey}_{missing}";
 
-            var x = o.ToStringFromTemplate(tmp);
+            var x = TemplateWriter.Transform(tmp, o);
 
             Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
         }
