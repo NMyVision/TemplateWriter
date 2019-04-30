@@ -2,6 +2,11 @@
 
 Take a string with placeholders and replace with values or by an object.
 
+![NuGet](https://img.shields.io/nuget/v/NMyVision.TemplateWriter.svg?style=flat-square&logo=nuget)
+
+``` cs
+Install-Package  NMyVision.TemplateWriter
+```
 ## Example
 
 ``` cs
