@@ -51,22 +51,42 @@ namespace NMyVision
         //At the heart of it this is basically a class to work with an IDictionary object
         IDictionary<string, object> _d;
 
+
+        protected virtual IDictionary<string, object> GetDefaultDictionary(DateTime now)
+        {
+            
+                var d = new Dictionary<string, object>();
+                
+                //Predefined variables at the root level...
+                d.Add(GlobalVariables.Current.ToString(), now);
+                d.Add(GlobalVariables.Current_Date.ToString(), now.ToString("yyyyMMdd"));
+                d.Add(GlobalVariables.Current_DateTime.ToString(), now.ToString("yyyyMMddHHmmss"));
+                d.Add(GlobalVariables.Current_Time.ToString(), now.ToString("HHmmss"));
+                d.Add(GlobalVariables.Current_UniqueDate.ToString(), now.ToString("yyyyMMddHHmmssfff"));
+
+                return d;
+            
+        }
+
         /// <summary>
         /// Constructor for TemplateWriter object.
         /// </summary>
         public TemplateWriter(DateTime? currentDateTime = null)
         {
-            _d = new Dictionary<string, object>();
-
-            var now = currentDateTime ?? DateTime.Now;
-            //Predefined variables at the root level...
-            _d.Add(GlobalVariables.Current.ToString(), now);
-            _d.Add(GlobalVariables.Current_Date.ToString(), now.ToString("yyyyMMdd"));
-            _d.Add(GlobalVariables.Current_DateTime.ToString(), now.ToString("yyyyMMddHHmmss"));
-            _d.Add(GlobalVariables.Current_Time.ToString(), now.ToString("HHmmss"));
-            _d.Add(GlobalVariables.Current_UniqueDate.ToString(), now.ToString("yyyyMMddHHmmssfff"));
+            _d = GetDefaultDictionary( currentDateTime ?? DateTime.Now ); 
         }
-        
+
+        /// <summary>
+        /// Constructor for TemplateWriter object.
+        /// </summary>
+        public TemplateWriter(IDictionary<string, object> source)
+        {
+            if (source == null)
+                _d = this.GetDefaultDictionary(DateTime.Now );
+            else
+                _d = source;
+        }
+
         /// <summary>
         /// Parses template from an object.
         /// </summary>
@@ -84,6 +104,21 @@ namespace NMyVision
         /// <param name="key">The key is used in the format string.</param>
         /// <param name="value">The value for a given key.</param>
         public void Add(string key, object value) => _d.Add(key, value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public void Add(object value)
+        {
+            if (value is IDictionary<string, object>)
+            {
+                var expando = new ExpandoObject();
+                var expandoDic = (IDictionary<string, object>)expando;
+                ((IDictionary<string, object>)value).ToList().ForEach((dk) => expandoDic.Add(dk.Key, dk.Value));
+                value = expando;
+            }
+        }
 
         /// <summary>
         /// Set or retrieve value from the template writer.
@@ -117,7 +152,7 @@ namespace NMyVision
         /// <summary>
         /// Gets an System.Collections.Generic.ICollection containing the keys of the TemplateWriter.
         /// </summary>
-        public IEnumerable<string> Keys => _d.Keys;
+        public IReadOnlyList<string> Keys => new System.Collections.ObjectModel.ReadOnlyCollection<string>(_d.Keys.ToList());
 
         /// <summary>
         /// Create a TemplateWriter instance with default File keys from a FileInfo object.
@@ -136,6 +171,18 @@ namespace NMyVision
             writer.Add("Modified", fi.LastWriteTime);
 
             return writer;
+        }
+
+
+        /// <summary>
+        /// Create a TemplateWriter instance with default File keys from a FileInfo object.
+        /// </summary>
+        /// <returns></returns>
+        public static TemplateWriter CreateFromObject(object source)
+        {
+            var type = source.GetType();
+            var dict = type.GetProperties().ToDictionary(pi => pi.Name, pi => pi.GetValue(source));
+            return new TemplateWriter(dict);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMyVision;
 
@@ -76,6 +77,51 @@ namespace TemplateWriterTests
             var x = TemplateWriter.Transform(tmp, o);
 
             Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
+        }
+
+        [TestMethod]
+        public void LoadObject()
+        {
+            var o = new
+            {
+                GroupKey = 1221,
+                CompanyKey = 100
+            };
+
+            var tmp = "{GroupKey}_{CompanyKey}_{missing}";
+
+            var tw = TemplateWriter.CreateFromObject(o);
+
+            var x = tw.Transform(tmp);
+
+            Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
+        }
+
+
+        [TestMethod]
+        public void AddDictionary()
+        {
+            var o = new
+            {
+                GroupKey = 1221,
+                CompanyKey = 100
+            };
+
+            var dict = new System.Collections.Generic.Dictionary<string, object>()
+            {
+                ["GroupKey"]= o.GroupKey,
+                ["CompanyKey"] = o.CompanyKey
+            };
+
+            var tmp = "{GroupKey}_{CompanyKey}_{missing}";
+
+            var tw = new TemplateWriter(dict);
+
+
+            var x = tw.Transform(tmp);
+
+            Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
+            Assert.IsFalse(tw.Keys.Contains(TemplateWriter.GlobalVariables.Current.ToString()));
         }
     }
 }
