@@ -5,7 +5,7 @@
     <Authors>Matt Gambill</Authors>
     <Version>1.1.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>Kam, TemplateWriter</PackageTags>
+    <PackageTags>NMyVision, TemplateWriter</PackageTags>
   </PropertyGroup>
 
 </Project>
