@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Matt Gambill</Authors>
-    <Version>1.0.0-pre</Version>
+    <Version>1.1.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>Kam, TemplateWriter</PackageTags>
   </PropertyGroup>
