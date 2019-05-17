@@ -61,6 +61,16 @@ namespace TemplateWriterTests
         }
 
 
+        [TestMethod]
+        public void NumberCustomFormat()
+        {
+            var tw = CreateTemplateWriter();
+            tw.Add("Number", 8001234567);
+
+            var tmp = "{Number:000-000-0000}";
+
+            Assert.AreEqual("800-123-4567", tw.Transform(tmp));
+        }
 
         [TestMethod]
         public void Object()

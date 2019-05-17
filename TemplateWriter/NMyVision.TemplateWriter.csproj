@@ -5,7 +5,13 @@
     <Authors>Matt Gambill</Authors>
     <Version>1.0.0-pre</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>Kam, TemplateWriter</PackageTags>
+    <PackageTags>NMyVision, TemplateWriter</PackageTags>
+    <Description>Simple text templating utility. Allows variable placeholders with built in formatting.
+
+Example: "Hello_{Name}_{Date:yyyyMM}" -&gt; "Hello_Peter_201904"</Description>
+    <RepositoryUrl>https://github.com/NMyVision/TemplateWriter</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/NMyVision/TemplateWriter</PackageProjectUrl>
+    <Copyright>2019</Copyright>
   </PropertyGroup>
 
 </Project>
