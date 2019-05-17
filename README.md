@@ -1,3 +1,4 @@
+
 # TemplateWriter
 
 Take a string with placeholders and replace with values or by an object.
@@ -7,6 +8,7 @@ Take a string with placeholders and replace with values or by an object.
 ``` cs
 Install-Package  NMyVision.TemplateWriter
 ```
+
 ## Example
 
 ``` cs
@@ -36,7 +38,6 @@ console.log(x); // outputs: 1221_101_{missing}
 
 
 ``` cs
-// Given:
 var dt = new DateTime(1980, 4, 6, 6, 30, 33);
 var tw = new TemplateWriter(dt);
 
