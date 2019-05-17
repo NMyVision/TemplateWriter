@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Matt Gambill</Authors>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>NMyVision, TemplateWriter</PackageTags>
     <Description>Simple text templating utility. Allows variable placeholders with built in formatting.
