@@ -47,10 +47,40 @@ tw.Transform("{Current_DateTime}"); // 19800406063033
 tw.Transform("{Current_Time}"); // 063033
 ```
 
-| Name | Format | Ouput |
-|------|--------| --- |
-|Current            | N/A               | 4/6/1980 6:30:33 AM |
-|Current_Date       | yyyyMMdd          | 19800406 |
-|Current_DateTime   | yyyyMMddHHmmss    | 19800406063033|
-|Current_Time       |HHmmss|063033      |
-|Current_UniqueDate |yyyyMMddHHmmssfff  |19800406063033000|
+| Name               | Format            | Ouput                 |
+|--------------------|-------------------| --------------------- |
+|Current             | N/A               | 4/6/1980 6:30:33 AM   |
+|Current_Date        | yyyyMMdd          | 19800406              |
+|Current_DateTime    | yyyyMMddHHmmss    | 19800406063033        |
+|Current_Time        | HHmmss|063033     |                       |
+|Current_UniqueDate  | yyyyMMddHHmmssfff | 19800406063033000     |
+|Index *             | N/A               | 0 ... N+1             | 
+
+Note Index default starts at 0 and increments by 1, this can be altered
+
+## Create from FileInfo to add predifined variables
+
+```
+var tw = TemplateWriter.Create(new FileInfo("C:\temp\Sample.txt"));
+```
+| Name      | Ouput                   |
+|-----------|-------------------------|
+| Name      | Sample                  |
+| Filename  | Sample.txt              |
+| Extension | .txt                    |
+| Fullname  | C:\temp\Sample.txt      |
+| Directory | C:\temp                 |
+| Created   | 4/25/2020 12:01:33 PM   |
+| Modified  | 4/25/2020 3:02:59 PM    |
+
+
+# Examples
+
+Look in the test folder for more examples.
+
+# Release Log
+
+1.2.0 
+- Add Index variable for use when used in loops.
+- Suppress internal object Extension
+- Expose GlobalFileVariables

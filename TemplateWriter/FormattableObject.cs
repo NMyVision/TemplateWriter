@@ -11,7 +11,7 @@ namespace NMyVision
     /// <summary>
     /// Extension for templating objects to strings.
     /// </summary>
-    public static class FormattableObjectExtension
+    internal static class FormattableObjectExtension
     {
         //originated:
         //http://www.hanselman.com/blog/ASmarterOrPureEvilToStringWithExtensionMethods.aspx
@@ -64,8 +64,7 @@ namespace NMyVision
                     // strings with format might actually be dates lets check
                     if (retrievedType == typeof(string) && toFormat.Length > 0)
                     {
-                        DateTime d = default(DateTime);
-                        if (DateTime.TryParse(retrievedObject.ToString(), out d))
+                        if (DateTime.TryParse(retrievedObject.ToString(), out var d))
                         {
                             retrievedType = typeof(DateTime);
                             retrievedObject = d;
@@ -85,8 +84,7 @@ namespace NMyVision
                         // allow formatting of numbers ie: if i = 12 and template is {i:000} output 012.
                         else if (toFormat.Contains("#") || toFormat.Contains("0"))
                         {
-                            int i = default(int);
-                            if (int.TryParse(retrievedObject.ToString(), out i))
+                            if (int.TryParse(retrievedObject.ToString(), out var i))
                             {
                                 retrievedType = typeof(int);
                                 retrievedObject = i;
