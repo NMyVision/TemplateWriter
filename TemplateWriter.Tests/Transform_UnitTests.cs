@@ -106,12 +106,12 @@ namespace TemplateWriterTests
         [TestMethod]
         public void LoadKeyValuePair()
         {
-            var source = new KeyValuePair<string, string>("Name", "Jane");
+            var source = new KeyValuePair<string, int>("Page",12);
             var tw = TemplateWriter.Empty;
             tw.Load(source);
 
-            var x = tw.Transform("[{Name}]");
-            Assert.AreEqual(x, "[Jane]");
+            var x = tw.Transform("[{Page}]");
+            Assert.AreEqual(x, "[12]");
 
         }
         //[TestMethod]
@@ -219,6 +219,39 @@ namespace TemplateWriterTests
             }
 
             Assert.AreEqual("5:10|15:11|25:12|35:13|45:14", string.Join("|", outputs));
+        }
+
+        [TestMethod]
+        public void Clear()
+        {
+            var o = new Model("Jane", "Doe");
+
+            var tw = new TemplateWriter();
+            
+            tw.Load(o);
+
+            tw.Clear();
+
+            Assert.IsFalse(tw.Keys.Contains("FirstName"));
+            Assert.IsFalse(tw.Keys.Contains("LastName"));
+
+
+            Assert.IsTrue(tw.Keys.Contains("Current"));
+            Assert.IsTrue(tw.Keys.Any());
+        }
+
+        [TestMethod]
+        public void ClearAll()
+        {
+            var o = new Model("Jane", "Doe");
+
+            var tw = new TemplateWriter();
+
+            tw.Load(o);
+
+            tw.Clear(true);
+
+            Assert.IsFalse(tw.Keys.Any());
         }
     }
 }

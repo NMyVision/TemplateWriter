@@ -92,3 +92,6 @@ Look in the test folder for more examples.
 
 2.0.1
 - Fix load to override an existing value if exists.
+
+2.0.2
+- Add clear method.

@@ -165,6 +165,23 @@ namespace NMyVision
         public bool Remove(string key)
             => _d.Remove(key);
 
+        /// <summary>
+        ///  Removes all variables.
+        /// </summary>
+        public void Clear(bool all = false)
+        {
+            if (all) _d.Clear();
+
+            var keys = _d.Keys.ToList();
+            for (int i = keys.Count - 1; i >= 0; i--)
+            {
+                var key = keys[i];
+                if (Enum.IsDefined(typeof(GlobalFileVariables), key) || Enum.IsDefined(typeof(GlobalVariables), key))
+                    continue;
+
+                _d.Remove(key);
+            }
+        } 
 
         /// <summary>
         /// Set or retrieve value from the template writer.
