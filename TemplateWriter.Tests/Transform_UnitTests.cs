@@ -8,8 +8,8 @@ using NMyVision;
 namespace TemplateWriterTests
 {
     [TestClass]
-    public class TransformTests        
-    {       
+    public partial class TransformTests
+    {
         [TestMethod]
         public void Object()
         {
@@ -18,7 +18,7 @@ namespace TemplateWriterTests
                 GroupKey = 1221,
                 CompanyKey = 100
             };
-             
+
             var tmp = "{GroupKey}_{CompanyKey}_{missing}";
 
             var x = TemplateWriter.Transform(tmp, o);
@@ -27,7 +27,85 @@ namespace TemplateWriterTests
         }
 
         [TestMethod]
+        public void LoadAnonObject()
+        {
+            var o = new
+            {
+                GroupKey = 1221,
+                CompanyKey = 100
+            };
+
+            var tmp = "{GroupKey}_{CompanyKey}_{missing}";
+
+            var tw = TemplateWriter.Empty;
+            tw.Load(o);
+
+            var x = tw.Transform(tmp);
+
+            Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
+        }
+
+        [TestMethod]
         public void LoadObject()
+        {
+            var o = new Model("Jane", "Doe");
+
+            var tmp = "{FirstName}_{LastName}_{Id}";
+
+            var tw = TemplateWriter.Empty;
+            tw.Load(o);
+
+            var x = tw.Transform(tmp);
+
+            Assert.AreEqual($"{o.FirstName}_{o.LastName}_{{Id}}", x);
+        }
+
+        [TestMethod]
+        public void LoadInvalidObject()
+        {
+            Assert.ThrowsException<System.IO.InvalidDataException>(() =>
+            {
+                var tw = TemplateWriter.Empty;
+                tw.Load("String");
+            });
+
+            Assert.ThrowsException<System.IO.InvalidDataException>(() =>
+            {
+                var tw = TemplateWriter.Empty;
+                tw.Load(new Guid());
+            });
+
+            Assert.ThrowsException<System.IO.InvalidDataException>(() =>
+            {
+                var tw = TemplateWriter.Empty;
+                tw.Load(new List<object>());
+            });
+
+        }
+
+
+        [TestMethod]
+        public void LoadKeyValuePair()
+        {
+            var source = new KeyValuePair<string, string>("Name", "Jane");
+            var tw = TemplateWriter.Empty;
+            tw.Load(source);
+
+            var x = tw.Transform("[{Name}]");
+            Assert.AreEqual(x, "[Jane]");
+
+        }
+        //[TestMethod]
+        //public void LoadToLookup()
+        //{
+
+        //    var tw = TemplateWriter.Empty;
+        //    var lookup = Enumerable.Range(0, 3).ToLookup(x => x, x => $"{x}");
+        //    tw.Load(lookup);
+        //}
+
+        [TestMethod]
+        public void CreateFromObject()
         {
             var o = new
             {
@@ -55,23 +133,20 @@ namespace TemplateWriterTests
         [TestMethod]
         public void NullConstructor()
         {
-            var tw = new TemplateWriter(null);
-            Assert.IsFalse(tw.Keys.Any());
+            Assert.ThrowsException<NullReferenceException>(() => new TemplateWriter(null) );
         }
 
         [TestMethod]
         public void AddDictionary()
         {
-            var o = new
-            {
-                GroupKey = 1221,
-                CompanyKey = 100
-            };
 
-            var dict = new System.Collections.Generic.Dictionary<string, object>()
+            var GroupKey = 1221;
+            var CompanyKey = 100;
+
+            var dict = new Dictionary<string, object>()
             {
-                ["GroupKey"]= o.GroupKey,
-                ["CompanyKey"] = o.CompanyKey
+                ["GroupKey"] = GroupKey,
+                ["CompanyKey"] = CompanyKey
             };
 
             var tmp = "{GroupKey}_{CompanyKey}_{missing}";
@@ -81,7 +156,7 @@ namespace TemplateWriterTests
 
             var x = tw.Transform(tmp);
 
-            Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
+            Assert.AreEqual($"{GroupKey}_{CompanyKey}_{{missing}}", x);
             Assert.IsFalse(tw.Keys.Contains(nameof(TemplateWriter.GlobalVariables.Current)));
             Assert.IsFalse(tw.Keys.Contains(nameof(TemplateWriter.GlobalVariables.Index)));
         }
@@ -97,24 +172,24 @@ namespace TemplateWriterTests
         public void Counter()
         {
             var tw = new TemplateWriter();
-            tw.Add("Position");
+            tw.Add("Position", 0);
 
             var outputs = new List<string>();
 
-            foreach( var i in Enumerable.Range(10,5))
+            foreach (var i in Enumerable.Range(10, 5))
             {
                 tw["Position"] = i;
-                outputs.Add(tw.Transform($"{{{ TemplateWriter.GlobalVariables.Index }}}:{{Position}}"));                    
+                outputs.Add(tw.Transform($"{{{ TemplateWriter.GlobalVariables.Index }}}:{{Position}}"));
             }
 
-            Assert.AreEqual("0:10|1:11|2:12|3:13|4:14", string.Join("|", outputs));            
+            Assert.AreEqual("0:10|1:11|2:12|3:13|4:14", string.Join("|", outputs));
         }
 
         [TestMethod]
         public void SeededCounter()
         {
-            var tw = new TemplateWriter(seed: 5, increment: 10 );
-            tw.Add("Position");
+            var tw = new TemplateWriter(seed: 5, increment: 10);
+            tw.Add("Position", 0);
 
             var outputs = new List<string>();
 

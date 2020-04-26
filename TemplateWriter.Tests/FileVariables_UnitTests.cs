@@ -20,7 +20,7 @@ namespace TemplateWriterTests
             var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");            
             File.WriteAllText(filename, Guid.NewGuid().ToString("N"));
             fi = new FileInfo(filename);
-            tw = TemplateWriter.Create(fi);
+            tw = TemplateWriter.CreateFromFileInfo(fi);
         }
 
         [TestCleanup]

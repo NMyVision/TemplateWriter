@@ -84,3 +84,8 @@ Look in the test folder for more examples.
 - Add Index variable for use when used in loops.
 - Suppress internal object Extension
 - Expose GlobalFileVariables
+
+2.0.0
+- null can not be passed in the constructor anymore use TemplateWriter.Empty
+- removed Add(object) now use Load(object)
+- Load(object) can accept an class object, Anonymous type, IDictionary or KeyValuePair 

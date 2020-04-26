@@ -21,14 +21,14 @@ namespace NMyVision
         /// <summary>
         /// Create a new instance with no variables.
         /// </summary>
-        public static TemplateWriter Empty { get; } = new TemplateWriter(null);
+        public static TemplateWriter Empty => new TemplateWriter(new Dictionary<string, object>());
 
 
         /// <summary>
         /// Create a TemplateWriter instance with default File keys from a FileInfo object.
         /// </summary>
         /// <returns></returns>
-        public static TemplateWriter Create(System.IO.FileInfo fi)
+        public static TemplateWriter CreateFromFileInfo(FileInfo fi)
         {
             var writer = new TemplateWriter();
 
@@ -44,7 +44,7 @@ namespace NMyVision
         }
 
         /// <summary>
-        /// Create a TemplateWriter instance with default File keys from a FileInfo object.
+        /// Create a TemplateWriter instance with default File keys from an object.
         /// </summary>
         /// <returns></returns>
         public static TemplateWriter CreateFromObject(object source)

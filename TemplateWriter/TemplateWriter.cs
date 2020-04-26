@@ -4,7 +4,9 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using IDataDictionary = System.Collections.Generic.IDictionary<string, object>;
+using DataDictionary = System.Collections.Generic.Dictionary<string, object>;
+using System.Collections;
 
 namespace NMyVision
 {
@@ -37,29 +39,32 @@ namespace NMyVision
         public string VariablePrefix { get; set; } = "@";
 
         //At the heart of it this is basically a class to work with an IDictionary object
-        IDictionary<string, object> _d;
+        IDataDictionary _d;
 
         /// <summary>
         /// Constructor for TemplateWriter object.
         /// </summary>
         public TemplateWriter(DateTime? currentDateTime = null, int seed = 0, int increment = 1)
         {
-            _d = GetDefaultDictionary(currentDateTime ?? DateTime.Now, seed, increment);
+            _d = GetDefaultDictionary(null, currentDateTime ?? DateTime.Now, seed, increment);
         }
 
         /// <summary>
         /// Constructor for TemplateWriter object.
         /// </summary>
-        public TemplateWriter(IDictionary<string, object> source)
+        public TemplateWriter(IDataDictionary source)
         {
-            _d = source ?? new Dictionary<string, object>(); ;
+            if (source == null)
+                throw new NullReferenceException("Source can not be null, if you want an empty TemplateWriter use TemplateWriter.Empty ");
+
+            _d = source;
         }
 
 
-        protected virtual IDictionary<string, object> GetDefaultDictionary(DateTime now, int seed = 0, int increment = 1)
+        protected virtual IDataDictionary GetDefaultDictionary(IDataDictionary d, DateTime now, int seed = 0, int increment = 1)
         {
 
-            var d = new Dictionary<string, object>();
+            if (d == null) d = new DataDictionary();
 
             //Predefined variables at the root level...
             d.Add(nameof(GlobalVariables.Current), now);
@@ -93,21 +98,45 @@ namespace NMyVision
         }
 
         /// <summary>
-        /// 
+        /// Load a dictionary object
         /// </summary>
         /// <param name="value"></param>
-        public TemplateWriter Add(object value)
+        public void Load(object value)
         {
-            if (value is IDictionary<string, object>)
+            if (value == null)
+                throw new NullReferenceException($"Source '{nameof(value)}' can not be null, if you want an empty TemplateWriter use TemplateWriter.Empty ");
+
+            var idex = new InvalidDataException("value must be an anonymous object or class or IDictionay<string, object>");
+
+            var type = value.GetType();
+            if (value is IEnumerable)
+            {
+                throw idex;
+            }
+            else if (value is IDictionary<string, object>)
             {
                 var expando = new ExpandoObject();
-                var expandoDic = (IDictionary<string, object>)expando;
-                ((IDictionary<string, object>)value).ToList().ForEach((dk) => expandoDic.Add(dk.Key, dk.Value));
-                //value = expando;
+                var expandoDic = (IDataDictionary)expando;
+                ((IDataDictionary)value).ToList().ForEach((dk) => _d.Add(dk.Key, dk.Value));
+                value = expando;
             }
-
-            return this;
+            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            {
+                var lkkey = type.GetProperty("Key").GetValue(value, null);
+                var lkvalue = type.GetProperty("Value").GetValue(value, null);
+                _d.Add(lkkey.ToString(), lkvalue);
+            }
+            else if (!(value is String) && type.IsClass)
+            {
+                type
+                    .GetProperties()
+                    .ToList()
+                    .ForEach(pi => _d.Add(pi.Name, pi.GetValue(value)));
+            }
+            else
+                throw idex;
         }
+
         /// <summary>
         /// Set or retrieve value from the template writer.
         /// </summary>
