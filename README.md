@@ -89,3 +89,6 @@ Look in the test folder for more examples.
 - null can not be passed in the constructor anymore use TemplateWriter.Empty
 - removed Add(object) now use Load(object)
 - Load(object) can accept an class object, Anonymous type, IDictionary or KeyValuePair 
+
+2.0.1
+- Fix load to override an existing value if exists.

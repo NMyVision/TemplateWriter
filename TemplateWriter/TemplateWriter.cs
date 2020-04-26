@@ -117,21 +117,21 @@ namespace NMyVision
             {
                 var expando = new ExpandoObject();
                 var expandoDic = (IDataDictionary)expando;
-                ((IDataDictionary)value).ToList().ForEach((dk) => _d.Add(dk.Key, dk.Value));
+                ((IDataDictionary)value).ToList().ForEach((dk) => this.Set(dk.Key, dk.Value));
                 value = expando;
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             {
                 var lkkey = type.GetProperty("Key").GetValue(value, null);
                 var lkvalue = type.GetProperty("Value").GetValue(value, null);
-                _d.Add(lkkey.ToString(), lkvalue);
+                this.Set(lkkey.ToString(), lkvalue);
             }
             else if (!(value is String) && type.IsClass)
             {
                 type
                     .GetProperties()
                     .ToList()
-                    .ForEach(pi => _d.Add(pi.Name, pi.GetValue(value)));
+                    .ForEach(pi => this.Set(pi.Name, pi.GetValue(value)));
             }
             else
                 throw idex;

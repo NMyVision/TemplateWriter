@@ -61,6 +61,25 @@ namespace TemplateWriterTests
         }
 
         [TestMethod]
+        public void LoadObjectLoop()
+        {
+            var models = new[] { new Model("Jane", "Doe"), new Model("Jamis", "Doe") };
+
+            var tmp = "{FirstName}_{LastName}_{Index}";
+
+            var tw = new TemplateWriter();
+            var index = 0;
+            foreach (var o in models)
+            {
+                tw.Load(o);
+
+                var x = tw.Transform(tmp);
+
+                Assert.AreEqual($"{o.FirstName}_{o.LastName}_{index++}", x);
+            }
+        }
+
+        [TestMethod]
         public void LoadInvalidObject()
         {
             Assert.ThrowsException<System.IO.InvalidDataException>(() =>
