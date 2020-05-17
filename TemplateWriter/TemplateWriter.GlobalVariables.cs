@@ -45,6 +45,10 @@ namespace NMyVision
             /// </summary>
             Current_UniqueDate,
             /// <summary>
+            /// A unique GUID
+            /// </summary>
+            UUID,
+            /// <summary>
             /// Current position when used with TemplateWriter instance, default base is 0.
             /// </summary>
             Index,

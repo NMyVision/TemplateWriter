@@ -55,8 +55,11 @@ tw.Transform("{Current_Time}"); // 063033
 |Current_Time        | HHmmss|063033     |                       |
 |Current_UniqueDate  | yyyyMMddHHmmssfff | 19800406063033000     |
 |Index *             | N/A               | 0 ... N+1             | 
+|UUID *              | GUID / UUID       |                       | 
 
-Note Index default starts at 0 and increments by 1, this can be altered
+Note:
+  - **Index** default starts at 0 and increments by 1, this can be altered
+  - **UUID** changes per transform call
 
 ## Create from FileInfo to add predifined variables
 
@@ -79,19 +82,24 @@ var tw = TemplateWriter.Create(new FileInfo("C:\temp\Sample.txt"));
 Look in the test folder for more examples.
 
 # Release Log
+2.1.0
+- Increment variable renamed to IncrementValue (variable is still Index)   
+- Add Increment method to manually increment the ```{Index}```
+- Add AutoIncrement variable to turn off/of increment functionality
+- Add new UUID variable
 
-1.2.0 
-- Add Index variable for use when used in loops.
-- Suppress internal object Extension
-- Expose GlobalFileVariables
+2.0.2
+- Add clear method.
+
+2.0.1
+- Fix load to override an existing value if exists.
 
 2.0.0
 - null can not be passed in the constructor anymore use TemplateWriter.Empty
 - removed Add(object) now use Load(object)
 - Load(object) can accept an class object, Anonymous type, IDictionary or KeyValuePair 
 
-2.0.1
-- Fix load to override an existing value if exists.
-
-2.0.2
-- Add clear method.
+1.2.0 
+- Add Index variable for use when used in loops.
+- Suppress internal object Extension
+- Expose GlobalFileVariables

@@ -240,6 +240,13 @@ namespace TemplateWriterTests
             Assert.IsTrue(tw.Keys.Any());
         }
 
+
+        //[TestMethod]
+        public void CustomResolver()
+        {
+            //Func<string, string> fn = (key, value) => { }
+        }
+
         [TestMethod]
         public void ClearAll()
         {

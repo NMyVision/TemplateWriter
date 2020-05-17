@@ -30,8 +30,12 @@ namespace NMyVision
         /// <summary>
         /// Amount to increase the Index variable when Transform is called.
         /// </summary>
-        public int Increment { get; private set; }
+        public int IncrementValue { get; private set; }
 
+        /// <summary>
+        /// Deterimines if after every Transform will the Index variable increment.
+        /// </summary>
+        public bool AutoIncrement { get; private set; }
 
         /// <summary>
         /// Variable prefixed used when generated from Extract method.
@@ -44,9 +48,9 @@ namespace NMyVision
         /// <summary>
         /// Constructor for TemplateWriter object.
         /// </summary>
-        public TemplateWriter(DateTime? currentDateTime = null, int seed = 0, int increment = 1)
+        public TemplateWriter(DateTime? currentDateTime = null, int seed = 0, int increment = 1, bool autoIncrement = true)
         {
-            _d = GetDefaultDictionary(null, currentDateTime ?? DateTime.Now, seed, increment);
+            _d = GetDefaultDictionary(null, currentDateTime ?? DateTime.Now, seed, increment, autoIncrement);
         }
 
         /// <summary>
@@ -61,7 +65,7 @@ namespace NMyVision
         }
 
 
-        protected virtual IDataDictionary GetDefaultDictionary(IDataDictionary d, DateTime now, int seed = 0, int increment = 1)
+        protected virtual IDataDictionary GetDefaultDictionary(IDataDictionary d, DateTime now, int seed = 0, int increment = 1, bool autoIncrement = true)
         {
 
             if (d == null) d = new DataDictionary();
@@ -76,8 +80,8 @@ namespace NMyVision
 
             d.Add(INDEX_KEY, seed);
 
-
-            this.Increment = increment;
+            this.AutoIncrement = autoIncrement;
+            this.IncrementValue = increment;
 
             Seed = seed;
 
@@ -202,8 +206,13 @@ namespace NMyVision
         /// <param name="template"></param>
         /// <param name="o"></param>
         /// <returns></returns>
-        public static string Transform(string template, object o)
-            => o.ToStringFromTemplate(template);
+        /// <example>
+        /// var x = { Name = "John" , Age = 21 };
+        /// Transform("{Name} {Current}.txt", x);
+        /// </example>
+        public static string Transform(string template, object o, IFormatProvider provider = null)
+        => TemplateWriter.Empty.ToStringFromTemplate(o, template, provider);
+        
 
         /// <summary>
         /// Transforms a string replacing placeholders with values.
@@ -211,14 +220,13 @@ namespace NMyVision
         /// <param name="format">A string with placeholders for the keys added and predefined keys.</param>
         /// <param name="provider">An object that supplies culture-specific formatting information.</param>
         /// <returns></returns>
-        /// <example>
-        /// var x = { Name = "John" , Age = 21 }; x.ToString("{Name} {Current}.txt");
-        /// </example>
         public string Transform(string format, IFormatProvider provider = null)
         {
-            var result = _d.ToStringFromTemplate(format, provider);
+            this.Set(nameof(GlobalVariables.UUID), Guid.NewGuid());
+            var result = this.ToStringFromTemplate(_d, format, provider);
 
-            IncrementCounter();
+            if (this.AutoIncrement)
+                Increment();
 
             return result;
         }
@@ -258,13 +266,16 @@ namespace NMyVision
             }
         }
 
-        private void IncrementCounter()
+        /// <summary>
+        /// Increment the index variable
+        /// </summary>
+        public void Increment(int? value = null)
         {
             if (_d.ContainsKey(INDEX_KEY))
             {
                 if (int.TryParse(this[INDEX_KEY].ToString(), out int c))
                 {
-                    this.Set(INDEX_KEY, c + this.Increment);
+                    this.Set(INDEX_KEY, c + (value ?? this.IncrementValue));
                 }
             }
         }
@@ -274,7 +285,7 @@ namespace NMyVision
         /// LinqPad allow use to dump the underlining object
         /// </summary>
         /// <returns></returns>
-        object ToDump() => new { Dictionary = _d, VariablePrefix, Seed, Increment };
+        object ToDump() => new { Dictionary = _d, VariablePrefix, Seed, IncrementValue };
 
         public void Dispose()
         {

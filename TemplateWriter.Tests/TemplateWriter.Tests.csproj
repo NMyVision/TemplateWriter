@@ -51,6 +51,7 @@
     <Compile Include="Model.cs" />
     <Compile Include="Transform_UnitTests.cs" />
     <Compile Include="FileVariables_UnitTests.cs" />
+    <Compile Include="Loop_UnitTests.cs" />
     <Compile Include="Variables_UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
