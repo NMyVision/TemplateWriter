@@ -260,5 +260,21 @@ namespace TemplateWriterTests
 
             Assert.IsFalse(tw.Keys.Any());
         }
+
+
+        [TestMethod]
+        public void ClearReset()
+        {
+            var o = new Model("Jane", "Doe");
+
+            var tw = new TemplateWriter();
+            tw.Transform("");
+            tw.Transform("");
+            tw.Load(o);
+
+            tw.Clear(false, false);
+
+            Assert.AreEqual(2, tw.CurrentIndex);
+        }
     }
 }

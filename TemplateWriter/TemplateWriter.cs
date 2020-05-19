@@ -22,6 +22,9 @@ namespace NMyVision
     {
         const string INDEX_KEY = nameof(GlobalVariables.Index);
 
+        //At the heart of it this is basically a class to work with an IDictionary object
+        IDataDictionary _d;
+
         /// <summary>
         /// Index variable start value.
         /// </summary>
@@ -41,9 +44,6 @@ namespace NMyVision
         /// Variable prefixed used when generated from Extract method.
         /// </summary>
         public string VariablePrefix { get; set; } = "@";
-
-        //At the heart of it this is basically a class to work with an IDictionary object
-        IDataDictionary _d;
 
         /// <summary>
         /// Constructor for TemplateWriter object.
@@ -77,14 +77,11 @@ namespace NMyVision
             d.Add(nameof(GlobalVariables.Current_Time), now.ToString("HHmmss"));
             d.Add(nameof(GlobalVariables.Current_UniqueDate), now.ToString("yyyyMMddHHmmssfff"));
 
-
             d.Add(INDEX_KEY, seed);
 
-            this.AutoIncrement = autoIncrement;
-            this.IncrementValue = increment;
-
+            AutoIncrement = autoIncrement;
+            IncrementValue = increment;
             Seed = seed;
-
 
             return d;
 
@@ -121,21 +118,21 @@ namespace NMyVision
             {
                 var expando = new ExpandoObject();
                 var expandoDic = (IDataDictionary)expando;
-                ((IDataDictionary)value).ToList().ForEach((dk) => this.Set(dk.Key, dk.Value));
+                ((IDataDictionary)value).ToList().ForEach((dk) => Set(dk.Key, dk.Value));
                 value = expando;
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
             {
                 var lkkey = type.GetProperty("Key").GetValue(value, null);
                 var lkvalue = type.GetProperty("Value").GetValue(value, null);
-                this.Set(lkkey.ToString(), lkvalue);
+                Set(lkkey.ToString(), lkvalue);
             }
             else if (!(value is String) && type.IsClass)
             {
                 type
                     .GetProperties()
                     .ToList()
-                    .ForEach(pi => this.Set(pi.Name, pi.GetValue(value)));
+                    .ForEach(pi => Set(pi.Name, pi.GetValue(value)));
             }
             else
                 throw idex;
@@ -161,6 +158,21 @@ namespace NMyVision
         }
 
         /// <summary>
+        /// The Index variable value
+        /// </summary>
+        public int? CurrentIndex
+        {
+            get
+            {
+                return this._d.Keys.Contains(INDEX_KEY) ? (int?)this[INDEX_KEY] : null;
+            }
+            set
+            {
+                this.Set(INDEX_KEY, value);
+            }
+        }
+
+        /// <summary>
         /// Set or retrieve value from the template writer.
         /// </summary>
         /// <param name="key"></param>
@@ -170,20 +182,32 @@ namespace NMyVision
             => _d.Remove(key);
 
         /// <summary>
-        ///  Removes all variables.
+        /// Removes all variables.
         /// </summary>
-        public void Clear(bool all = false)
+        /// <param name="all">If true clear the global variables</param>
+        /// <param name="resetIndex">Set the Index back to the original seed value</param>
+        public void Clear(bool all = false, bool resetIndex = true)
         {
-            if (all) _d.Clear();
 
-            var keys = _d.Keys.ToList();
-            for (int i = keys.Count - 1; i >= 0; i--)
+            if (all)
             {
-                var key = keys[i];
-                if (Enum.IsDefined(typeof(GlobalFileVariables), key) || Enum.IsDefined(typeof(GlobalVariables), key))
-                    continue;
+                _d.Clear();
+            }
+            else
+            {
+                // Reset the index
+                if (resetIndex)
+                    Set(INDEX_KEY, Seed);
 
-                _d.Remove(key);
+                var keys = _d.Keys.ToList();
+                for (int i = keys.Count - 1; i >= 0; i--)
+                {
+                    var key = keys[i];
+                    if (Enum.IsDefined(typeof(GlobalFileVariables), key) || Enum.IsDefined(typeof(GlobalVariables), key))
+                        continue;
+
+                    _d.Remove(key);
+                }
             }
         } 
 
@@ -222,10 +246,10 @@ namespace NMyVision
         /// <returns></returns>
         public string Transform(string format, IFormatProvider provider = null)
         {
-            this.Set(nameof(GlobalVariables.UUID), Guid.NewGuid());
-            var result = this.ToStringFromTemplate(_d, format, provider);
+            Set(nameof(GlobalVariables.UUID), Guid.NewGuid());
+            var result = ToStringFromTemplate(_d, format, provider);
 
-            if (this.AutoIncrement)
+            if (AutoIncrement)
                 Increment();
 
             return result;
@@ -235,7 +259,7 @@ namespace NMyVision
         /// Clones the object.
         /// </summary>
         /// <returns></returns>
-        public object Clone() => this.MemberwiseClone();
+        public object Clone() => MemberwiseClone();
 
 
         /// <summary>
@@ -261,7 +285,7 @@ namespace NMyVision
             {
                 foreach (var g in groups)
                 {
-                    this.Add($"{VariablePrefix}{g}", m.Groups[g].Value);
+                    Add($"{VariablePrefix}{g}", m.Groups[g].Value);
                 }
             }
         }
@@ -273,10 +297,7 @@ namespace NMyVision
         {
             if (_d.ContainsKey(INDEX_KEY))
             {
-                if (int.TryParse(this[INDEX_KEY].ToString(), out int c))
-                {
-                    this.Set(INDEX_KEY, c + (value ?? this.IncrementValue));
-                }
+                CurrentIndex = CurrentIndex + (value ?? IncrementValue);
             }
         }
 
