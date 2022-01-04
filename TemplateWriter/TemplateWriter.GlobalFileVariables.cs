@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-
-namespace NMyVision
+﻿namespace NMyVision
 {
 
     /// <summary>
@@ -16,7 +8,7 @@ namespace NMyVision
     /// Predefined template names are visible via TemplateWriter.GlobalVariables.
     /// </remarks>
     /// <seealso cref="GlobalVariables"/>
-    public partial class TemplateWriter 
+    public partial class TemplateWriter
     {
 
         /// <summary>

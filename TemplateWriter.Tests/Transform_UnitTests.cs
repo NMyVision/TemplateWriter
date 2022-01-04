@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NMyVision;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMyVision;
 
 namespace TemplateWriterTests
 {
@@ -43,6 +42,21 @@ namespace TemplateWriterTests
             var x = tw.Transform(tmp);
 
             Assert.AreEqual($"{o.GroupKey}_{o.CompanyKey}_{{missing}}", x);
+        }
+
+        [TestMethod]
+        public void PlaceholdersWithSpace()
+        {
+            var o = new Model("Jane", "Doe");
+
+            var tmp = "{ FirstName }_{ LastName }_{ Id }";
+
+            var tw = TemplateWriter.Empty;
+            tw.Load(o);
+
+            var x = tw.Transform(tmp);
+
+            Assert.AreEqual($"{o.FirstName}_{o.LastName}_{{ Id }}", x);
         }
 
         [TestMethod]
@@ -106,7 +120,7 @@ namespace TemplateWriterTests
         [TestMethod]
         public void LoadKeyValuePair()
         {
-            var source = new KeyValuePair<string, int>("Page",12);
+            var source = new KeyValuePair<string, int>("Page", 12);
             var tw = TemplateWriter.Empty;
             tw.Load(source);
 
@@ -152,7 +166,7 @@ namespace TemplateWriterTests
         [TestMethod]
         public void NullConstructor()
         {
-            Assert.ThrowsException<NullReferenceException>(() => new TemplateWriter(null) );
+            Assert.ThrowsException<NullReferenceException>(() => new TemplateWriter(null));
         }
 
         [TestMethod]
@@ -227,7 +241,7 @@ namespace TemplateWriterTests
             var o = new Model("Jane", "Doe");
 
             var tw = new TemplateWriter();
-            
+
             tw.Load(o);
 
             tw.Clear();

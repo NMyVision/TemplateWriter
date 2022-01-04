@@ -1,6 +1,6 @@
 ﻿namespace TemplateWriterTests
 {
-    public partial class TransformTests        
+    public partial class TransformTests
     {
         class Model
         {
@@ -16,6 +16,6 @@
             }
         }
 
-        
+
     }
 }

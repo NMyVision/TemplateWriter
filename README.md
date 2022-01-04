@@ -82,6 +82,9 @@ var tw = TemplateWriter.Create(new FileInfo("C:\temp\Sample.txt"));
 Look in the test folder for more examples.
 
 # Release Log
+2.1.2
+- Allow for spaces in placeholder names
+
 2.1.1
 - Clear method resets the `Index` variable
 - Add CurrentIndex property to expose `Index` variable
@@ -93,10 +96,10 @@ Look in the test folder for more examples.
 - Add new `UUID` variable
 
 2.0.2
-- Add clear method.
+- Add clear method
 
 2.0.1
-- Fix load to override an existing value if exists.
+- Fix load to override an existing value if exists
 
 2.0.0
 - `null` can not be passed in the constructor anymore use TemplateWriter.Empty
@@ -104,6 +107,6 @@ Look in the test folder for more examples.
 - Load(object) can accept an class object, Anonymous type, IDictionary or KeyValuePair 
 
 1.2.0 
-- Add Index variable for use when used in loops.
+- Add Index variable for use when used in loops
 - Suppress internal object Extension
 - Expose GlobalFileVariables

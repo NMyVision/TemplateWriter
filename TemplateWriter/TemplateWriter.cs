@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using IDataDictionary = System.Collections.Generic.IDictionary<string, object>;
 using DataDictionary = System.Collections.Generic.Dictionary<string, object>;
-using System.Collections;
+using IDataDictionary = System.Collections.Generic.IDictionary<string, object>;
 
 namespace NMyVision
 {
@@ -209,7 +209,7 @@ namespace NMyVision
                     _d.Remove(key);
                 }
             }
-        } 
+        }
 
         /// <summary>
         /// Set or retrieve value from the template writer.
@@ -227,16 +227,16 @@ namespace NMyVision
         /// <summary>
         /// Parses template from an object.
         /// </summary>
-        /// <param name="template"></param>
-        /// <param name="o"></param>
+        /// <param name="template">Template that will be used to generate the text output.</param>
+        /// <param name="source">Class or Anonymous object, where the properties will be used for the template placeholders.</param>
         /// <returns></returns>
         /// <example>
         /// var x = { Name = "John" , Age = 21 };
         /// Transform("{Name} {Current}.txt", x);
         /// </example>
-        public static string Transform(string template, object o, IFormatProvider provider = null)
-        => TemplateWriter.Empty.ToStringFromTemplate(o, template, provider);
-        
+        public static string Transform(string template, object source, IFormatProvider provider = null)
+        => TemplateWriter.Empty.ToStringFromTemplate(source, template, provider);
+
 
         /// <summary>
         /// Transforms a string replacing placeholders with values.

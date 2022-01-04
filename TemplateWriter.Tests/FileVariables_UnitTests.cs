@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMyVision;
+using System;
+using System.IO;
 
 namespace TemplateWriterTests
 {
     [TestClass]
-    public class FileVariableTransformTests        
+    public class FileVariableTransformTests
     {
         TemplateWriter tw;
         FileInfo fi;
@@ -17,7 +14,7 @@ namespace TemplateWriterTests
         [TestInitialize]
         public void TestInit()
         {
-            var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");            
+            var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample.txt");
             File.WriteAllText(filename, Guid.NewGuid().ToString("N"));
             fi = new FileInfo(filename);
             tw = TemplateWriter.CreateFromFileInfo(fi);
@@ -34,7 +31,7 @@ namespace TemplateWriterTests
         public void Name()
         {
             Assert.AreEqual(Path.GetFileNameWithoutExtension(fi.Name), tw.Transform($"{{{ TemplateWriter.GlobalFileVariables.Name }}}"));
- }
+        }
         [TestMethod]
         public void Filename()
         {

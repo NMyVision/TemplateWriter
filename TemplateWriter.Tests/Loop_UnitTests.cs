@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMyVision;
 
 namespace TemplateWriterTests
 {
     [TestClass]
-    public class LoopTransformTests        
+    public class LoopTransformTests
     {
 
         [TestMethod]
@@ -60,7 +56,7 @@ namespace TemplateWriterTests
             Assert.AreEqual("0", tw.Transform("{Index}"));
             tw.Increment(); // since increment is set to 0... the default 
             Assert.AreEqual("1", tw.Transform("{Index}"));
-       
+
         }
 
         [TestMethod]

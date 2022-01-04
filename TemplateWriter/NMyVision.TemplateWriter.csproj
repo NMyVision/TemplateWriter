@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Matt Gambill</Authors>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>NMyVision, TemplateWriter</PackageTags>
     <Description>Simple text templating utility. Allows variable placeholders with built in formatting.
@@ -13,5 +13,9 @@ Example: "Hello_{Name}_{Date:yyyyMM}" -&gt; "Hello_Peter_201904"</Description>
     <PackageProjectUrl>https://github.com/NMyVision/TemplateWriter</PackageProjectUrl>
     <Copyright>2020</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
 
 </Project>
