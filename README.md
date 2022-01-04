@@ -43,7 +43,7 @@ var tw = new TemplateWriter(dt);
 
 tw.Transform("{Current}"); // 4/6/1980 6:30:33 AM
 tw.Transform("{Current_Date}"); // 19800406
-tw.Transform("{Current_DateTime}"); // 19800406063033
+tw.Transform("{Current_DateTime}"); // 19800406063033 (note: 24hr format)
 tw.Transform("{Current_Time}"); // 063033
 ```
 
